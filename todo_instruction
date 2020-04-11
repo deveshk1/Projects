@@ -1,0 +1,48 @@
+todo.txt
+Implementing Server Side Validation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Command Bean or Form Backing Bean
+
+Add Validation
+Use Validation on Controller
+Display Errors in View
+
+Command Bean
+~~~~~~~~~~~~
+Controller
+View - Spring Form Tags
+
+
+
+LoginController -> adds name to model
+welcome.jsp -> shows ${name}
+
+TodoController -> redirects to list-todos.jsp
+${name} is empty 
+
+
+Component, Service, Repository, Controller
+Autowired
+ComponentScan
+
+Field dummyService in com.in28minutes.springboot.web.controller.LoginController 
+required a bean of type 'com.in28minutes.dummy.DummyService' 
+that could not be found.
+
+Spring Boot Starter Parent
+Spring Boot Starter Web
+@SpringBootApplication
+Auto Configuration
+
+Dispatcher Servlet
+
+/login => "login"
+
+"login" => src/main/webapp/WEB-INF/jsp/login.jsp 
+
+
+Search for a view named "login"
+
+
+
+/login => LoginController 
