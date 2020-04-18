@@ -2,11 +2,13 @@ package com.in28minutes.springboot.web.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+import java.lang.*;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -18,11 +20,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.in28minutes.springboot.web.model.Todo;
-import com.in28minutes.springboot.web.service.LoginService;
 import com.in28minutes.springboot.web.service.TodoService;
 
 @Controller
-@SessionAttributes("name")
+//@SessionAttributes("name")-------> ---------> removed bcz we got the session from spring security
+
 public class TodoController {
 
 	@Autowired
@@ -42,22 +44,42 @@ public class TodoController {
 	
 	@RequestMapping(value = "/list-todos", method = RequestMethod.GET)
 	public String showTodos(ModelMap model) {
-		String name = (String) model.get("name");
+		String name = getLoggedInUserName(model);
 		model.put("todos", service.retrieveTodos(name));
 		return "list-todos";
 	}
 // to SHOW ADD TODO PAGE
+
+	private String getLoggedInUserName(ModelMap model) {
+//		return (String) model.get();  -------------------->replace this with below code
+		
+		//1st get the principle name
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal(); //get loggedin user bean
+		
+		//check if this principle is instance of specific class(USERDETAIL--->another class used to store user details)
+		
+		if(principal instanceof UserDetails) //from loggedin user bean we wll get the username through this UserDetails
+		{
+			return ((UserDetails)principal).getUsername(); // and return username
+		}
+		return principal.toString();
+	}
 	
 	@RequestMapping(value = "/add-todo", method = RequestMethod.GET)
+	
 	public String showAddTodoPage(ModelMap model) {
-		model.addAttribute("todo", new Todo(0, (String) model.get("name"),
+		model.addAttribute("todo", new Todo(0, getLoggedInUserName(model),
 				"Default Desc", new Date(), false));
 		return "todo";
 	}
 
 	// TO DELETE A TODO
 	@RequestMapping(value = "/delete-todo", method = RequestMethod.GET)
+	
 	public String deleteTodo(@RequestParam int id) {
+	
+		if(id ==1)
+			throw new RuntimeException("You Trying to delete 1st entry");
 		service.deleteTodo(id);
 		return "redirect:/list-todos";
 	}
@@ -89,7 +111,7 @@ public class TodoController {
 			return "todo";
 		}
 		
-		todo.setUser((String) model.get("name"));
+		todo.setUser(getLoggedInUserName(model));
 		
 		service.updateTodo(todo);
 
@@ -109,7 +131,7 @@ public class TodoController {
 			return "todo";
 		}
 
-		service.addTodo((String) model.get("name"), todo.getDesc(), todo.getTargetDate(),  //getTargetDate() to enter custom date in addTODO
+		service.addTodo(getLoggedInUserName(model), todo.getDesc(), todo.getTargetDate(),  //getTargetDate() to enter custom date in addTODO
 				false);
 		return "redirect:/list-todos";
 	}
