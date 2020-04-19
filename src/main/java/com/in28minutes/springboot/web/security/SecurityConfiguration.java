@@ -20,7 +20,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter  // to c
 	@Autowired
 	public void ConfigureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception //AuthenticationManagerBuilder is inbuilt
 	{
-		auth.inMemoryAuthentication().withUser("in28minutes").password("dummy")
+		auth.inMemoryAuthentication().withUser("user").password("user")
 		.roles("USER","ADMIN");
 	}
 	
