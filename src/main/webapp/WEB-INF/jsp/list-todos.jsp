@@ -8,8 +8,8 @@
 			<thead>
 				<tr>
 					<th>Description</th>
-					<th>Target Date</th>
-					<th>Is it Done?</th>
+					<th>Date</th>
+					<th>Completion Status</th>
 					<th></th>
 					<th></th>
 				</tr>
